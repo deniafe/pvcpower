@@ -3,13 +3,56 @@
 }
 
 .main {
-  min-height: 100vh;
-  padding: 4rem 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  background-repeat: no-repeat; 
+  background-position: center center; 
+  background-size: cover; 
+  /* background-image: url("https://dd7tel2830j4w.cloudfront.net/f1644592319316x574499967443762100/image2vector.svg"); */
+}
+
+.mapContainer {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  top: 0px;
+  z-index: 0;
+}
+
+.mainAd {
+  height: 100vh;
+  width: 100%;
+  padding: 1px;
+  position: relative;
+  /* background-repeat: no-repeat; 
+  background-position: center center; 
+  background-size: cover;  */
+}
+
+.mapAdContainer {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 0;
+} 
+
+.comboboxInput {
+  /* width: 100%; */
+  padding: 0.5rem;
+  padding-right: 6px;
+  outline: none;
+  height: 38px;
+  border: 1px solid rgba(171, 171, 171, 0.4);
+  background-color: rgb(255, 255, 255); 
+  border-radius: 5px; 
+  font-family: Barlow; 
+  font-size: 14px; color: rgb(112, 108, 108); 
+  line-height: 1; 
+  padding: 4px; 
+  width: 308px; 
+  left: 0px;
 }
 
 .footer {
