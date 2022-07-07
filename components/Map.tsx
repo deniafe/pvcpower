@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { GoogleMap, Marker, DirectionsRenderer, Circle, MarkerClusterer } from '@react-google-maps/api'
-import { distance, distance2, getPixelOffset } from '../hooks'
+import { distance, distance2 } from '../hooks'
 
 type MapOptions = google.maps.MapOptions
 type LatLngLiteral = google.maps.LatLngLiteral
@@ -54,6 +54,25 @@ const Map = ({mapStyle, mapRef, flattenedPolls, office, setDirections, pollingCe
     setPollingCenter({lat: closest.lat, lng: closest.lng})
     return closest
   }
+
+  const getPixelOffset = (map: MapType, marker: MarkerType) => {
+    // Calculate marker position in pixels form upper left corner
+    const zoomNum = map.getZoom() || 0
+    const lat =  map.getBounds()?.getNorthEast().lat() || 6.404736138
+    const lng =  map.getBounds()?.getSouthWest().lng() || 3.393873833
+    const scale = (map.getZoom() && Math.pow(2, zoomNum)) || 0
+    const nw =  new google.maps.LatLng(
+       lat,
+       lng
+    );
+    const worldCoordinateNW =(map.getProjection()?.fromLatLngToPoint(nw)) || {x: 0, y:0}
+    const worldCoordinate = (map.getProjection()?.fromLatLngToPoint(marker.getPosition() || {lat: 6.404736138, lng: 3.393873833})) || {x: 0, y:0}
+    const pixelOffset = new google.maps.Point(
+        Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
+        Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale)
+    );
+    return pixelOffset;
+  };
 
   const panToRight = () => {
     const pixelOffset = markerRef.current && getPixelOffset(mapRef.current, markerRef.current);

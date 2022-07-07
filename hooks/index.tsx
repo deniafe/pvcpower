@@ -47,18 +47,18 @@ export function distance2(position1 : LatLngLiteral, position2: LatLngLiteral){
 }
 
 
-export const getPixelOffset = (map: MapType, marker: MarkerType) => {
-  // Calculate marker position in pixels form upper left corner
-  const scale = Math.pow(2, map.getZoom());
-  const nw = new google.maps.LatLng(
-      map.getBounds().getNorthEast().lat(),
-      map.getBounds().getSouthWest().lng()
-  );
-  const worldCoordinateNW = map.getProjection().fromLatLngToPoint(nw);
-  const worldCoordinate = map.getProjection().fromLatLngToPoint(marker.getPosition());
-  const pixelOffset = new google.maps.Point(
-      Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
-      Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale)
-  );
-  return pixelOffset;
-};
+// export const getPixelOffset = (map: MapType, marker: MarkerType) => {
+//   // Calculate marker position in pixels form upper left corner
+//   const scale = map.getZoom() && Math.pow(2, map.getZoom());
+//   const nw = new google.maps.LatLng(
+//       map.getBounds().getNorthEast().lat(),
+//       map.getBounds().getSouthWest().lng()
+//   );
+//   const worldCoordinateNW = map.getProjection().fromLatLngToPoint(nw);
+//   const worldCoordinate = map.getProjection().fromLatLngToPoint(marker.getPosition());
+//   const pixelOffset = new google.maps.Point(
+//       Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
+//       Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale)
+//   );
+//   return pixelOffset;
+// };
