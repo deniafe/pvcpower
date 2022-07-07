@@ -84,8 +84,8 @@ const AddressInfoBox = ({setOffice, mapRef, directions, ward, steps, pollingCent
                 <Text fontSize={14} mb={1} color='#706C6C'>Wards</Text>
                 <Select icon={<MdArrowDropDown />} fontSize='14px' placeholder='Select a location' value={ward}>
                  {
-                 wards.map(unitWard => {
-                   return <option value={unitWard}>{unitWard}</option>
+                 wards.map((unitWard,i) => {
+                   return <option key={i} value={unitWard}>{unitWard}</option>
                   })
                  }
                 </Select>
