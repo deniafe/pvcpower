@@ -29,7 +29,7 @@ const SmallMap = ({leg}: ChildrenProps) => {
              width="230px"
             >
             <Flex p='2' pt='3' pr='4'>
-              <Image src='./mapFront.png' alt='Map Visuals' borderRadius='base' width='77' h='43' boxShadow= '#aaaaaa 1px 1px 2px 0px' />
+              <Image src='./mapfront.png' alt='Map Visuals' borderRadius='base' width='77' h='43' boxShadow= '#aaaaaa 1px 1px 2px 0px' />
 
               <Box 
                  overflow='scroll'
@@ -67,7 +67,7 @@ const SmallMap = ({leg}: ChildrenProps) => {
              width="230px"
              boxShadow= 'rgba(0, 201, 147, 0.53) 1px 1px 8px 0' bg='white'>
             <Flex p='2' pt='3' pr='4'>
-              <Image src='./mapFront.png' alt='Map Visuals' borderRadius='base' boxShadow= '#aaaaaa 1px 1px 2px 0px' w='77' h='43' />
+              <Image src='./mapfront.png' alt='Map Visuals' borderRadius='base' boxShadow= '#aaaaaa 1px 1px 2px 0px' w='77' h='43' />
 
               <Box 
                 overflow='scroll'
