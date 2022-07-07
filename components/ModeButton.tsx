@@ -2,7 +2,12 @@ import React from 'react'
 import { Button } from '@chakra-ui/react'
 import { IoMoonSharp } from "react-icons/io5";
 
-const ModeButton = ({text, icon}) => {
+type ChildrenProps = {
+  text?: any
+  icon?: any
+}
+
+const ModeButton = ({text, icon}: ChildrenProps) => {
   return (
     <>
     <Button 
