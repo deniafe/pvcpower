@@ -2,7 +2,11 @@ import React from 'react'
 import { Flex, Box } from '@chakra-ui/react'
 import SideNav from '../Navigation/sidenav'
 
-const PollsLayout = ({children}) => {
+type ChildrenProps = {
+  children: any
+}
+
+const PollsLayout = ({children}: ChildrenProps) => {
   return (
     <>
     <Flex>

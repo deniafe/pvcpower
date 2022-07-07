@@ -1,46 +1,128 @@
-import React from 'react'
-import { useState, useMemo, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { GoogleMap, Marker, DirectionsRenderer, Circle, MarkerClusterer } from '@react-google-maps/api'
-import {Polls} from './data/Data'
-import Distance from './Distance'
-import Home from '../styles/Home.module.css'
-import { MdHouseSiding } from 'react-icons/md'
+import { distance, distance2, getPixelOffset } from '../hooks'
 
 type MapOptions = google.maps.MapOptions
 type LatLngLiteral = google.maps.LatLngLiteral
+type ChildrenProps = {
+  mapStyle?: any
+  mapRef?: any
+  flattenedPolls?: { lat: number; lng: number; lga: string; }[]
+  office?: LatLngLiteral | undefined
+  setDirections?: any
+  pollingCenter?: LatLngLiteral | undefined
+  setPollingCenter?: any
+  setPollingAddress?: any
+  directions?: any
+  center?: any
+  pointer?: any
+}
 
-console.log('Polls', Polls)
+type MarkerType = google.maps.Marker
+type MapType = google.maps.Map
+type MapMouseEvent = google.maps.MapMouseEvent
+type DirectionsType = google.maps.DirectionsRenderer
 
-const Map = ({mapStyle, mapRef, office, setDirections, directions, center, pointer}) => {
+const Map = ({mapStyle, mapRef, flattenedPolls, office, setDirections, pollingCenter, setPollingCenter, setPollingAddress, directions, center, pointer}: ChildrenProps) => {
 
   center = center || {lat: 6.404736138, lng: 3.393873833}
+
+  // Replace this with call to $("#arrow").offset()
+  let arrowPos = { top: 300, left: 600 }
+  const markerRef = useRef<MarkerType>()
+  const directionsRef = useRef<DirectionsType>()
+
+  const getShortestDistance = (flattenedPolls: { lat: number; lng: number; lga: string; }[]) => {
+  //  const distanceArray = flattenedPolls.map(coords => {
+  //     return distance(center, coords)
+  //   })
+  //   const closest = Math.min(...distanceArray)
+  //   console.log('The closest coords: ', closest)
+  //   const closestLocationIndex = distanceArray.indexOf(closest)
+  //   return flattenedPolls[closestLocationIndex]
+
+    const center = office || {lat: 6.404736138, lng: 3.393873833}
+    let closest= flattenedPolls[0];
+    let closest_distance = distance2(closest, center);
+     for(var i = 1; i < flattenedPolls.length;i++){
+        if(distance2(flattenedPolls[i], center) < closest_distance) {
+            closest_distance=distance2(flattenedPolls[i],center);
+            closest=flattenedPolls[i];
+        }
+    }
+    setPollingAddress(closest)
+    setPollingCenter({lat: closest.lat, lng: closest.lng})
+    return closest
+  }
+
+  const panToRight = () => {
+    const pixelOffset = markerRef.current && getPixelOffset(mapRef.current, markerRef.current);
+    pixelOffset && mapRef.current.panBy(pixelOffset.x - arrowPos.left,
+             pixelOffset.y - arrowPos.top);
+  }
+
   const options = useMemo<MapOptions>(() => ({
     mapId: 'a8a3bf08449c920c',
     disableDefaultUI: true, 
     clickableIcons: false,
   }), [])
 
-  const onLoad = useCallback((map) => (mapRef.current = map), [])
-  const pollingCenters = useMemo(() => Polls, []);
+  const onMapLoad = useCallback((map: google.maps.Map): void => {mapRef.current = map}, [])
+
+  const onMarkerLoad = useCallback((marker: google.maps.Marker): void => {
+    markerRef.current = marker
+  }, [])
+
+  const onDirectionsLoad = useCallback((directionRender: google.maps.DirectionsRenderer): void => {
+    directionsRef.current = directionRender
+  }, [])
+
+  const onDirectionsChange = useCallback((): void => {
+    directionsRef.current && directionsRef.current.setMap(null)
+  }, [directions])
+
+  const onMarkerClick = useCallback((): void => {
+    const pollUnit = flattenedPolls && getShortestDistance(flattenedPolls)
+    pollUnit && fetchDirections(pollUnit)
+
+  }, [office])
+
+  // const polls: Array<LatLngLiteral>   =  pollingCenters[0].pollingUnits.map(center => ({lat: parseFloat(center.lat), lng: parseFloat(center.long)}))
   // const houses = useMemo(() => generateHouses(center), [center]);
 
-  const fetchDirections = (house: LatLngLiteral) => {
+  const fetchDirections = (pollCenter: LatLngLiteral) => {
     if (!office) return;
 
     const service = new google.maps.DirectionsService();
+
     service.route(
       {
-        origin: house,
-        destination: office,
+        origin: office,
+        destination: pollCenter,
         travelMode: google.maps.TravelMode.WALKING,
       },
       (result, status) => {
         if (status === "OK" && result) {
           setDirections(result);
+
+          const myTimeout = setTimeout(() => {
+            panToRight()
+            myStopFunction()
+          }, 500);
+
+          const myStopFunction = () => {
+              clearTimeout(myTimeout);
+            }
+          
         }
       }
-    );
-  };
+    )
+  }
+
+  useEffect(() => { 
+    office && onMarkerClick()
+  }, [office])
+  
 
   return (
     <div >
@@ -49,12 +131,13 @@ const Map = ({mapStyle, mapRef, office, setDirections, directions, center, point
       center={center} 
       mapContainerClassName={mapStyle}
       options={options}
-      onLoad={onLoad}
+      onLoad={onMapLoad}
       >
 
       {directions && (
             <DirectionsRenderer
               directions={directions}
+              onLoad={onDirectionsLoad}
               options={{
                 polylineOptions: {
                   zIndex: 50,
@@ -64,41 +147,36 @@ const Map = ({mapStyle, mapRef, office, setDirections, directions, center, point
               }}
             />
           )}
+          {/* true below should be office */}
 
         {
-          office && (
+          pollingCenter && ( 
             <>
               <Marker
-                position={office}
+                position={pollingCenter}
                 icon={pointer}
+                onLoad={onMarkerLoad}
+                // onClick={onMarkerClick}
               />
 
-                  {
-                    pollingCenters?.map((centers, i) => {
-                      return <MarkerClusterer>
-                                {(clusterer) =>
-                                      pollingCenters[i].pollingUnits.map((center) => {
-                                        const poll =  {lat: parseFloat(center.lat), lng: parseFloat(center.long)}
-                                        console.log('Result of mapping pollig centers',)
-                                        return <Marker
-                                          key={center.name}
-                                          position={poll}
-                                          clusterer={clusterer}
-                                          onClick={() => {
-                                            fetchDirections(poll);
-                                          }}
-                                        />
-                                        })
-                                }
-                              </MarkerClusterer>
-                    })
-                  }
+                  {/* <MarkerClusterer>
+                    {(clusterer) =>
+                          flattenedPolls.map((center, index) => {
+                            const poll =  {lat: center.lat, lng: center.lng}
+                            return <Marker
+                              key={index}
+                              position={poll}
+                              clusterer={clusterer}
+                              onClick={() => {
+                                fetchDirections(poll);
+                              }}
+                            />
+                            })
+                    }
+                  </MarkerClusterer> */}
+                  
 
-              {/* {pollingCenters[0].pollingUnits.map((center) => (
-                <Marker icon="./MapCircleSmall.png" key={center.number} position={{lat: parseInt(center.lat), lng: parseInt(center.long)}} />
-              ))} */}
-
-              <Circle center={office} radius={20000} options={closeOptions} />
+              {/* <Circle center={office} radius={200} options={closeOptions} /> */}
               
               </>
               )

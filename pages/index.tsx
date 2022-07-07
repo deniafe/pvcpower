@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
 import { useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 
 import Map from '../components/Map'
 import { GoogleMap } from '@react-google-maps/api'
@@ -15,6 +16,7 @@ type LatLngLiteral = google.maps.LatLngLiteral
 
 
 const Page: NextPageWithLayout = () => {
+  const router = useRouter()
   const mapRef = useRef<GoogleMap>();
   const [position, setPosition] = useState<LatLngLiteral>();
   // const  center = useMemo<LatLngLiteral>(() => ({lat: 6.404736138, lng: 3.393873833}), [])
@@ -42,11 +44,16 @@ const Page: NextPageWithLayout = () => {
     }
 
     // Geolocation success callback fn
-    const showPosition = (position) => {
-      let lat = position.coords.latitude // You have obtained latitude coordinate!
-      let lng = position.coords.longitude // You have obtained longitude coordinate!
-      console.log(' Current usr position', {lat, lng})
+    const showPosition = (position: any) => {
+      let lat: number = position.coords.latitude // You have obtained latitude coordinate!
+      let lng: number = position.coords.longitude // You have obtained longitude coordinate!
+      // console.log(' Current usr position', {lat, lng})
       setPosition({lat, lng})
+      // router.push('/address')
+      router.push({
+        pathname: '/address',
+        query: {lat , lng},
+      }, '/address')
     }
 
   

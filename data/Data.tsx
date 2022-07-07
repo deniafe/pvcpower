@@ -1,4 +1,4 @@
-export const Polls = [
+export const PollsData = [
   // {
   //   "lga": "LGA NAME: ETIOSA LGA CODE: 08"
   // }, 

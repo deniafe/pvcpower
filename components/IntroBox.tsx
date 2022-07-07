@@ -1,16 +1,16 @@
 import React from 'react'
-import { useRouter } from 'next/router'
 
 import Link from 'next/link'
 import { Box, Text, Image, Container, Flex, Icon, Divider, Heading } from '@chakra-ui/react'
-import { IoLocateSharp } from 'react-icons/io5'
+import { IoLocateSharp, IoLocationSharp } from 'react-icons/io5'
 import LocateButton from '../components/LocateButton'
 
+type ChildrenProps = {
+  getLocation: any
+}
 
-
-const IntroBox = ({getLocation}) => {
-  const router = useRouter()
-
+const IntroBox = ({getLocation}: ChildrenProps) => {
+ 
   return (
     <>
     <Box
@@ -81,10 +81,9 @@ const IntroBox = ({getLocation}) => {
               justifyContent="center"
               onClick={() => {
                 getLocation()
-                router.push('/address')
               }}
             >
-                <LocateButton text='Find Nearest Location'/>
+                <LocateButton icon={<IoLocationSharp />} text='Find Nearest Location'/>
             </Box>
             <Box
               display="flex" 

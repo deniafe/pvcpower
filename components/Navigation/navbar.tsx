@@ -31,7 +31,7 @@ const Navbar = () => {
         </Box>
         <Spacer />
         <ButtonGroup gap='2'>
-          <ModeButton text='Dark Mode'/>
+          <ModeButton icon={''} text='Dark Mode'/>
           <Button color="Black" colorScheme='teal' fontSize={16} borderRadius={20} fontWeight={500} variant='ghost'>
             Volunteer
           </Button>
@@ -41,7 +41,7 @@ const Navbar = () => {
                 router.push('/address')
               }}
             >
-                    <LocateButton text='Find Nearest Location'/>
+                    <LocateButton icon={''} text='Find Nearest Location'/>
             </Box>
         </ButtonGroup>
       </Flex>
