@@ -116,9 +116,10 @@ const Details: NextPageWithLayout = () => {
   },[pollingCenter]);
 
   useEffect(() => {
-    const len = state.comments && state.comments.length
-    state.comments && len ? setComments([state.comments[2], state.comments[3]]) : getComments()
-  },[state]);
+    // const len = state.comments && state.comments.length
+    // state.comments && len ? setComments([state.comments[2], state.comments[3]]) : getComments()
+    getComments()
+  },[]);
 
 
   const reviewBox = comments.map((comment, i) => {
