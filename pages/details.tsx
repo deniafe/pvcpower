@@ -111,6 +111,7 @@ const Details: NextPageWithLayout = () => {
     directions && setPollingCenter(location)
   }, [state, directions])
 
+
   useEffect(() => {
     directionIndex.current = 0;
   },[pollingCenter]);

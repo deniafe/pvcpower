@@ -104,7 +104,12 @@ const SideNav = () => {
                 alignItems="center" 
                 justifyContent="center"
               >
-                <ModeButton text='Volunteer Now' icon={<IoCheckmarkOutline />}/>
+                 <a href="https://api.whatsapp.com/send?phone=70341665677&text=I%20would%20like%20to%20volunteer%20for%20this%20project" target="_blank" rel="noreferrer">
+
+                  <ModeButton icon={<IoCheckmarkOutline />} text='Volunteer'/>
+
+                  </a>
+
               </Box>
         </Box>
       </Container>

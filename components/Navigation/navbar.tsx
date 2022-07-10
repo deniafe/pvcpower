@@ -5,6 +5,7 @@ import { Flex, Box, Spacer, ButtonGroup, Button } from '@chakra-ui/react'
 import logo from '../../public/pvcpowerlogo.png'
 import LocateButton from '../LocateButton'
 import ModeButton from '../ModeButton'
+import { IoCheckmarkOutline } from 'react-icons/io5'
 
 const Navbar = () => {
   const router = useRouter()
@@ -31,10 +32,12 @@ const Navbar = () => {
         </Box>
         <Spacer />
         <ButtonGroup gap='2'>
-          <ModeButton icon={''} text='Dark Mode'/>
-          <Button color="Black" colorScheme='teal' fontSize={16} borderRadius={20} fontWeight={500} variant='ghost'>
-            Volunteer
-          </Button>
+
+        <a href="https://api.whatsapp.com/send?phone=70341665677&text=I%20would%20like%20to%20volunteer%20for%20this%20project" target="_blank" rel="noreferrer">
+
+        <ModeButton icon={<IoCheckmarkOutline />} text='Volunteer'/>
+
+        </a>
           <Box
               
               onClick={() => {
