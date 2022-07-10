@@ -109,7 +109,7 @@ const Details: NextPageWithLayout = () => {
   useEffect(() => { 
     const location = directions && directions.routes[0].legs[0].end_location
     directions && setPollingCenter(location)
-  }, [state.directions, directions])
+  }, [state, directions])
 
   useEffect(() => {
     directionIndex.current = 0;
@@ -117,7 +117,7 @@ const Details: NextPageWithLayout = () => {
 
   useEffect(() => {
     const len = state.comments && state.comments.length
-    state.comments ? setComments([state.comments[2], state.comments[3]]) : getComments()
+    state.comments && len ? setComments([state.comments[2], state.comments[3]]) : getComments()
   },[state]);
 
 
@@ -275,7 +275,7 @@ const Details: NextPageWithLayout = () => {
                 display="flex" 
                 alignItems="center" 
                 justifyContent="center"
-                py={2}
+                py={4}
               >
                  <Button 
                     leftIcon={<IoChatboxEllipsesSharp />} 
