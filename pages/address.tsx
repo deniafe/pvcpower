@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
-import { useState, useRef, useMemo, useEffect } from 'react'
+import { useState, useRef, useMemo, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
+import { useDisclosure, useToast } from '@chakra-ui/react'
 import Map from '../components/Map'
 import Layout from '../components/layouts/layout'
 import PollsLayout from '../components/layouts/polls'
@@ -10,25 +11,28 @@ import Home from '../styles/Home.module.css'
 import AddressInfoBox from '../components/AddressInfoBox'
 import SmallMap from '../components/SmallMap'
 import AddressBoxPointer from '../components/AddressBoxPointer'
+import CommentPopup from '../components/CommentPopup'
 import { PollsData } from '../data/Data'
 import { distance, distance2 } from '../hooks'
+import { AppStateContext } from '../contexts/AppStateContext'
+
 
 type LatLngLiteral = google.maps.LatLngLiteral
 type DirectionsResult = google.maps.DirectionsResult 
 type PollLatLng = { lat: number; lng: number; lga: string; }
 
 const Polls: NextPageWithLayout = () => {
-  const router = useRouter()
-  const query = router.query
-  const lat = query.lat && typeof query.lat !== 'object' ? query.lat : ''
-  const lng = query.lng && typeof query.lng !== 'object' ? query.lng : ''
-  const initialLocation = {lat: parseFloat(lat), lng: parseFloat(lng)}
-  const [office, setOffice] = useState<LatLngLiteral>(initialLocation);
+  const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>();
   const [pollingCenter, setPollingCenter] = useState<LatLngLiteral>();
   const [pollingAddress, setPollingAddress] = useState<PollLatLng>();
   const [ward, setWard] = useState('')
   const mapRef = useRef<GoogleMap>();
+  const [comment, setComment] = useState('');// description
   const [directions, setDirections] = useState<DirectionsResult>();
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { state, dispatch } = useContext(AppStateContext);
+  const toast = useToast()
+
 
   const pollingCenters = useMemo(() => PollsData, [])
 
@@ -44,6 +48,16 @@ const Polls: NextPageWithLayout = () => {
       return acc.concat(curVal)
   }, [])
 
+  const showMessage = ({status, message, title}: {title: string, message: string, status: "info" | "warning" | "success" | "error" | "loading" | undefined}) =>
+  toast({
+    title: title,
+    position: 'top-right',
+    description: message,
+    status: status,
+    duration: 9000,
+    isClosable: true,
+  })
+
   const center = useMemo<LatLngLiteral>(() => ({lat: 6.404736138, lng: 3.393873833}), [])
 
   useEffect(() => {
@@ -51,9 +65,16 @@ const Polls: NextPageWithLayout = () => {
     const endIndex = pollingAddress && pollingAddress.lga.lastIndexOf('RA') - 1
     const ward = pollingAddress && pollingAddress.lga.slice(startIndex, endIndex)
     ward && setWard(ward)
+    dispatch({type: 'SET_CURRENT_WARD', payload: ward || ''})
   }, [pollingAddress])
 
-  console.log(directions)
+  useEffect(() => {
+    const initialLocation = state.currentLocation || {lat: 6.404736138, lng: 3.393873833}
+    setCurrentLocation(initialLocation)
+    setDirections(state.directions)
+
+  }, [state])
+
 
   return (
     <>
@@ -64,16 +85,17 @@ const Polls: NextPageWithLayout = () => {
             mapRef={mapRef} 
             flattenedPolls={flattenedPolls} 
             mapStyle={Home.mapAdContainer} 
-            office={office} 
+            currentLocation={currentLocation} 
             pollingCenter={pollingCenter} 
             setPollingCenter={setPollingCenter} 
             setPollingAddress={setPollingAddress}
-            setDirections={setDirections}  
-            directions={directions} 
             pointer={"./MapCircleSmall.png"} 
             center={center}
+            directions={directions} 
+            setDirections={setDirections} 
         />
-        <AddressInfoBox setOffice={setOffice}  pollingCenter={pollingCenter}  mapRef={mapRef} directions={directions} ward={ward} steps={directions?.routes[0].legs[0].steps} />
+        <AddressInfoBox onOpen={onOpen} setComment={setComment} comment={comment} showMessage={showMessage}  pollingCenter={pollingCenter}  mapRef={mapRef} ward={ward} setCurrentLocation={setCurrentLocation} currentLocation={currentLocation} directions={directions} setDirections={setDirections} />
+        <CommentPopup setComment={setComment} showMessage={showMessage} pollingCenter={pollingCenter} isOpen={isOpen} onOpen={onOpen} onClose={onClose} comment={comment}  />
       </main>
     </>
   )

@@ -3,6 +3,8 @@ import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 import Head from "next/head";
 import '../styles/globals.css'
+import { AppStateProvider } from '../contexts/AppStateContext'
+
 
 
 export type NextPageWithLayout = NextPage & {
@@ -18,12 +20,12 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page)
 
   return getLayout(
-    <>
-        <Head>
+    <AppStateProvider>
+      <Head>
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
-        <Component {...pageProps} />
-    </>
+      <Component {...pageProps} />
+    </AppStateProvider>
 
   )
 }

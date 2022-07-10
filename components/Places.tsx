@@ -15,10 +15,10 @@ import { IoLocationSharp } from 'react-icons/io5'
 import { Icon, Box } from '@chakra-ui/react'
 
 type PlacesProps = {
-  setOffice: (position: google.maps.LatLngLiteral) => void;
+  setCurrentLocation: (position: google.maps.LatLngLiteral) => void;
 };
 
-export default function Places({ setOffice }: PlacesProps) {
+export default function Places({ setCurrentLocation }: PlacesProps) {
   const {
     ready,
     value,
@@ -33,7 +33,7 @@ export default function Places({ setOffice }: PlacesProps) {
 
     const results = await getGeocode({ address: val });
     const { lat, lng } = await getLatLng(results[0]);
-    setOffice({ lat, lng });
+    setCurrentLocation({ lat, lng });
   };
 
   console.log({status, data})

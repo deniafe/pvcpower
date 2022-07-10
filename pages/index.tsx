@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useRef, useState } from 'react'
+import { useRef, useState, useContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 import Map from '../components/Map'
@@ -11,6 +11,9 @@ import Navbar from '../components/Navigation/navbar'
 import { Image,Flex } from '@chakra-ui/react'
 import Home from '../styles/Home.module.css'
 import IntroBox from '../components/IntroBox'
+import { AppStateContext } from '../contexts/AppStateContext'
+
+
 
 type LatLngLiteral = google.maps.LatLngLiteral
 
@@ -19,6 +22,8 @@ const Page: NextPageWithLayout = () => {
   const router = useRouter()
   const mapRef = useRef<GoogleMap>();
   const [position, setPosition] = useState<LatLngLiteral>();
+  const { dispatch } = useContext(AppStateContext);
+
   // const  center = useMemo<LatLngLiteral>(() => ({lat: 6.404736138, lng: 3.393873833}), [])
 
   // If browser supports navigator.geolocation, generate Lat/Long else let user know there is an error
@@ -47,15 +52,15 @@ const Page: NextPageWithLayout = () => {
     const showPosition = (position: any) => {
       let lat: number = position.coords.latitude // You have obtained latitude coordinate!
       let lng: number = position.coords.longitude // You have obtained longitude coordinate!
-      // console.log(' Current usr position', {lat, lng})
+  
+      dispatch({type: 'SET_CURRENT_LOCATION', payload: {lat, lng}})
       setPosition({lat, lng})
-      // router.push('/address')
-      router.push({
-        pathname: '/address',
-        query: {lat , lng},
-      }, '/address')
+      router.push('/address')
+      // router.push({
+      //   pathname: '/address',
+      //   query: {lat , lng},
+      // }, '/address')
     }
-
   
   return (
     <>

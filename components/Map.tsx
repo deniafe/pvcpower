@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useContext, useMemo, useCallback, useRef,  Dispatch, SetStateAction, } from 'react'
 import { GoogleMap, Marker, DirectionsRenderer, Circle, MarkerClusterer } from '@react-google-maps/api'
 import { distance, distance2 } from '../hooks'
+import { AppStateContext } from '../contexts/AppStateContext'
 
 type MapOptions = google.maps.MapOptions
 type LatLngLiteral = google.maps.LatLngLiteral
@@ -8,14 +9,14 @@ type ChildrenProps = {
   mapStyle?: any
   mapRef?: any
   flattenedPolls?: { lat: number; lng: number; lga: string; }[]
-  office?: LatLngLiteral | undefined
-  setDirections?: any
+  currentLocation?: LatLngLiteral | undefined
   pollingCenter?: LatLngLiteral | undefined
   setPollingCenter?: any
   setPollingAddress?: any
-  directions?: any
   center?: any
   pointer?: any
+  directions?: google.maps.DirectionsResult | undefined
+  setDirections?: Dispatch<SetStateAction<google.maps.DirectionsResult | undefined>>
 }
 
 type MarkerType = google.maps.Marker
@@ -23,7 +24,9 @@ type MapType = google.maps.Map
 type MapMouseEvent = google.maps.MapMouseEvent
 type DirectionsType = google.maps.DirectionsRenderer
 
-const Map = ({mapStyle, mapRef, flattenedPolls, office, setDirections, pollingCenter, setPollingCenter, setPollingAddress, directions, center, pointer}: ChildrenProps) => {
+const Map = ({mapStyle, mapRef, flattenedPolls, currentLocation, pollingCenter, setPollingCenter, setPollingAddress, center, pointer, directions, setDirections}: ChildrenProps) => {
+
+  const { state, dispatch } = useContext(AppStateContext)
 
   center = center || {lat: 6.404736138, lng: 3.393873833}
 
@@ -33,15 +36,7 @@ const Map = ({mapStyle, mapRef, flattenedPolls, office, setDirections, pollingCe
   const directionsRef = useRef<DirectionsType>()
 
   const getShortestDistance = (flattenedPolls: { lat: number; lng: number; lga: string; }[]) => {
-  //  const distanceArray = flattenedPolls.map(coords => {
-  //     return distance(center, coords)
-  //   })
-  //   const closest = Math.min(...distanceArray)
-  //   console.log('The closest coords: ', closest)
-  //   const closestLocationIndex = distanceArray.indexOf(closest)
-  //   return flattenedPolls[closestLocationIndex]
-
-    const center = office || {lat: 6.404736138, lng: 3.393873833}
+    const center = currentLocation || {lat: 6.404736138, lng: 3.393873833}
     let closest= flattenedPolls[0];
     let closest_distance = distance2(closest, center);
      for(var i = 1; i < flattenedPolls.length;i++){
@@ -52,6 +47,7 @@ const Map = ({mapStyle, mapRef, flattenedPolls, office, setDirections, pollingCe
     }
     setPollingAddress(closest)
     setPollingCenter({lat: closest.lat, lng: closest.lng})
+    dispatch({type: 'SET_POLLING_LOCATION', payload: closest})
     return closest
   }
 
@@ -104,26 +100,24 @@ const Map = ({mapStyle, mapRef, flattenedPolls, office, setDirections, pollingCe
     const pollUnit = flattenedPolls && getShortestDistance(flattenedPolls)
     pollUnit && fetchDirections(pollUnit)
 
-  }, [office])
+  }, [currentLocation])
 
-  // const polls: Array<LatLngLiteral>   =  pollingCenters[0].pollingUnits.map(center => ({lat: parseFloat(center.lat), lng: parseFloat(center.long)}))
-  // const houses = useMemo(() => generateHouses(center), [center]);
 
   const fetchDirections = (pollCenter: LatLngLiteral) => {
-    if (!office) return;
+    if (!currentLocation) return;
 
     const service = new google.maps.DirectionsService();
 
     service.route(
       {
-        origin: office,
+        origin: currentLocation,
         destination: pollCenter,
         travelMode: google.maps.TravelMode.WALKING,
       },
       (result, status) => {
         if (status === "OK" && result) {
-          setDirections(result);
-
+          dispatch({ type: 'SET_DIRECTION', payload: result });
+          // setDirections(result)
           const myTimeout = setTimeout(() => {
             panToRight()
             myStopFunction()
@@ -139,8 +133,13 @@ const Map = ({mapStyle, mapRef, flattenedPolls, office, setDirections, pollingCe
   }
 
   useEffect(() => { 
-    office && onMarkerClick()
-  }, [office])
+    // Only call this function if there is no polling location
+    currentLocation && onMarkerClick()
+  }, [currentLocation])
+
+  useEffect(() => { 
+    setDirections && setDirections(state.directions)
+  }, [])
   
 
   return (

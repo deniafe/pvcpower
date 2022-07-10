@@ -46,6 +46,17 @@ export function distance2(position1 : LatLngLiteral, position2: LatLngLiteral){
   return d;
 }
 
+const getShortestDistance = (flattenedPolls: { lat: number; lng: number; lga: string; }[]) => {
+  //  const distanceArray = flattenedPolls.map(coords => {
+  //     return distance(center, coords)
+  //   })
+  //   const closest = Math.min(...distanceArray)
+  //   console.log('The closest coords: ', closest)
+  //   const closestLocationIndex = distanceArray.indexOf(closest)
+  //   return flattenedPolls[closestLocationIndex]
+
+  }
+
 
 // export const getPixelOffset = (map: MapType, marker: MarkerType) => {
 //   // Calculate marker position in pixels form upper left corner
@@ -62,3 +73,43 @@ export function distance2(position1 : LatLngLiteral, position2: LatLngLiteral){
 //   );
 //   return pixelOffset;
 // };
+
+
+
+
+
+// If browser supports navigator.geolocation, generate Lat/Long else let user know there is an error
+export const getPosition = () => {
+  if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(showPosition, posError); // Passing in a success callback and an error callback fn
+  } else {
+  alert("Sorry, Geolocation is not supported by this browser."); // Alert is browser does not support geolocation
+  }
+}
+
+// Geolocation error callback fn. Query permissions to check if the error occured due to user not allowing location to be shared
+const posError = () => {
+  if (navigator.permissions) {
+  navigator.permissions.query({ name: 'geolocation' }).then(res => {
+  if (res.state === 'denied') {
+  alert('Enable location permissions for this website in your browser settings.')
+  }
+  })
+  } else {
+  alert('Unable to access your location. You can continue by submitting location manually.') // Obtaining Lat/long from address necessary
+  }
+}
+
+ // Geolocation success callback fn
+ const showPosition = (position: any) => {
+  let lat: number = position.coords.latitude // You have obtained latitude coordinate!
+  let lng: number = position.coords.longitude // You have obtained longitude coordinate!
+  // console.log(' Current usr position', {lat, lng})
+  console.log('I am going to call dispatch from index.tsx')
+  // setPosition({lat, lng})
+  // // router.push('/address')
+  // router.push({
+  //   pathname: '/address',
+  //   query: {lat , lng},
+  // }, '/address')
+}

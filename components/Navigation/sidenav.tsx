@@ -28,11 +28,11 @@ const SideNav = () => {
       icon: IoChatboxEllipsesSharp,
       href: 'reviews',
     },
-    {
-      title: 'Polling Stations',
-      icon: IoArchiveSharp,
-      href: 'polling-stations',
-    },
+    // {
+    //   title: 'Polling Stations',
+    //   icon: IoArchiveSharp,
+    //   href: 'polling-stations',
+    // },
     {
       title: 'Past Results',
       icon: IoPieChartSharp,

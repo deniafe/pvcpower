@@ -1,12 +1,14 @@
-import { useRef, useState, useEffect } from 'react'
-import { Heading, Box, Text, Stack, Textarea, Select, Center, Button, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverFooter, PopoverArrow, PopoverBody, PopoverCloseButton, ButtonGroup } from '@chakra-ui/react'
+import { useRef, useState, useEffect, useContext, Dispatch, SetStateAction, MutableRefObject } from 'react'
+import { Heading, Box, Text, Stack, Textarea, Select, Center, Button, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverFooter, PopoverArrow, PopoverBody, PopoverCloseButton, ButtonGroup, ToastId } from '@chakra-ui/react'
 import { MdArrowDropDown, MdDirections } from "react-icons/md";
-import { IoLocationSharp, IoWalkSharp, IoArrowForwardSharp, IoChatboxEllipsesSharp } from 'react-icons/io5'
+import { IoLocationSharp, IoWalkSharp, IoArrowForwardSharp, IoChatboxEllipsesSharp, IoArrowBackSharp } from 'react-icons/io5'
 import Places from "../components/Places";
 import Home from '../styles/Home.module.css'
 import LocateButton from '../components/LocateButton'
 import Distance from './Distance'
 import ModeButton from './ModeButton'
+import { AppStateContext } from '../contexts/AppStateContext'
+import { GoogleMap } from '@react-google-maps/api'
 
 const wards = [
   'VICTORIA ISLAND I', 
@@ -23,39 +25,62 @@ const wards = [
 
 type LatLngLiteral = google.maps.LatLngLiteral
 type ChildrenProps = {
-  setOffice: any
-  mapRef: any
-  ward: any
+  mapRef: MutableRefObject<GoogleMap | undefined>
+  ward: string
   pollingCenter: LatLngLiteral | undefined
-  steps: any
-  directions: any
+  currentLocation?: LatLngLiteral | undefined
+  setCurrentLocation: Dispatch<SetStateAction<google.maps.LatLngLiteral | undefined>>
+  directions?: google.maps.DirectionsResult | undefined
+  setDirections: Dispatch<SetStateAction<google.maps.DirectionsResult | undefined>>
+  setComment: Dispatch<SetStateAction<string>>
+  comment: string
+  onOpen: () => void 
+  showMessage: ({ status, message, title }: {
+    title: string;
+    message: string;
+    status: "info" | "warning" | "success" | "error" | "loading" | undefined;
+}) => ToastId
 }
 
-const AddressInfoBox = ({setOffice, mapRef, directions, ward, steps, pollingCenter}: ChildrenProps) => {
+const AddressInfoBox = ({mapRef, ward, pollingCenter, onOpen, currentLocation, setCurrentLocation, directions, setDirections, setComment, comment,  showMessage}: ChildrenProps) => {
 
   const initialFocusRef = useRef<HTMLButtonElement>()
   const [stepsIndex, setStepsIndex] = useState(0);
+  const [steps, setSteps] = useState<google.maps.DirectionsStep[]>()
   const directionIndex = useRef(0);
+  const { state, dispatch } = useContext(AppStateContext);
 
-  // useEffect(() => {
-  //   if( directionIndex.current === steps.length - 1) return
-  //   console.log('UseEffect in addIndex is beig ran')
-  //   console.log(steps)
-  //   directionIndex.current = directionIndex.current + 1;
-  //   console.log(directionIndex.current)
-  // });
 
-  // useEffect(() => {
-  //   if( directionIndex.current === 0) return
-  //   directionIndex.current = directionIndex.current - 1;
-  // }, [minusIndex]);
+  useEffect(() => {
+    console.log('AppState viewed from useEffect in addressbox >>>>>>>>>>>>>>>>>>>>', state)
+  }, [state])
+
+  useEffect(() => { 
+    setSteps(state.directions?.routes[0].legs[0].steps)
+  }, [state.directions])
 
   useEffect(() => {
     directionIndex.current = 0;
   },[pollingCenter]);
 
 
-  console.log(steps)
+  const handleCommentChange = (event: {target: {value: string}}) =>  {
+    setComment(event.target.value)
+  }
+
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
+    e.preventDefault(); // avoid default behaviour
+    
+    if(!comment){ // check for any null value
+      return  showMessage({
+       title: 'Error',
+       message: 'You cannot post an empty comment',
+       status: 'error'
+     })
+    }
+    onOpen()
+  }
+
 
   return (
     <>
@@ -93,8 +118,9 @@ const AddressInfoBox = ({setOffice, mapRef, directions, ward, steps, pollingCent
               <Box pb={3}>
                 <Text fontSize={14} mb={1} color='#706C6C'>Address</Text>
                 <Places
-                  setOffice={(position) => {
-                    setOffice(position);
+                  setCurrentLocation={(position) => {
+                    setCurrentLocation && setCurrentLocation(position);
+                    dispatch({type: 'SET_CURRENT_LOCATION', payload: position})
                     mapRef.current?.panTo(position);
                   }}
                 />
@@ -145,6 +171,7 @@ const AddressInfoBox = ({setOffice, mapRef, directions, ward, steps, pollingCent
                         <Box fontSize='sm'>Step {stepsIndex + 1} of {steps?.length}</Box>
                         <ButtonGroup size='sm'>
                           <Button 
+                           leftIcon={<IoArrowBackSharp />}
                             borderRadius={20} 
                             background='#00CA90' 
                             color={'white'} 
@@ -158,7 +185,6 @@ const AddressInfoBox = ({setOffice, mapRef, directions, ward, steps, pollingCent
                               if( directionIndex.current === 0) return
                               directionIndex.current = directionIndex.current - 1 
                               setStepsIndex(directionIndex.current)
-                              console.log(directionIndex.current)
                             }}
                             >
                             Back
@@ -175,10 +201,9 @@ const AddressInfoBox = ({setOffice, mapRef, directions, ward, steps, pollingCent
                             fontSize={14} 
                             _hover={{ bg: '#009EB0' }} 
                             onClick={() => { 
-                              if( directionIndex.current === steps.length - 1) return
+                              if( directionIndex.current === (steps ? steps.length : 0) - 1) return
                               directionIndex.current = directionIndex.current + 1 
                               setStepsIndex(directionIndex.current)
-                              console.log(directionIndex.current)
                             }}
                             >
                             Next
@@ -190,8 +215,8 @@ const AddressInfoBox = ({setOffice, mapRef, directions, ward, steps, pollingCent
               </Center>)}
 
               <Box pt={4}>
-                <Text fontSize={14} color='#706C6C' mb={1}>Comment about this center</Text>
-                <Textarea fontSize='14px' placeholder='Drop your comment' size='md' />
+                <Text fontSize={14} color='#706C6C' mb={1} >Comment about this center</Text>
+                <Textarea fontSize='14px' placeholder='Drop your comment' value={comment} size='md' onChange={handleCommentChange} />
               </Box>
               
               <Box
@@ -200,8 +225,21 @@ const AddressInfoBox = ({setOffice, mapRef, directions, ward, steps, pollingCent
                 justifyContent="center"
                 py={2}
               >
-                  <LocateButton text='Post Comment' icon={<IoChatboxEllipsesSharp />} />
-
+                 <Button 
+                    leftIcon={<IoChatboxEllipsesSharp />} 
+                    borderRadius={20} 
+                    background='#00CA90' 
+                    color={'white'} 
+                    cursor={'pointer'}
+                    fontWeight={500}
+                    paddingRight={10} 
+                    paddingLeft={6} 
+                    fontSize={14} 
+                    _hover={{ bg: '#009EB0' }} 
+                    onClick={handleSubmit}
+                    >
+                    Post Comment
+                  </Button>
               </Box>
               <Box
                 display="flex" 

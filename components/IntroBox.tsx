@@ -6,7 +6,7 @@ import { IoLocateSharp, IoLocationSharp } from 'react-icons/io5'
 import LocateButton from '../components/LocateButton'
 
 type ChildrenProps = {
-  getLocation: any
+  getLocation: () => void
 }
 
 const IntroBox = ({getLocation}: ChildrenProps) => {

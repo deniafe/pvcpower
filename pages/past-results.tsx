@@ -7,7 +7,7 @@ import type { NextPageWithLayout } from './_app'
 const PastResults: NextPageWithLayout = () => {
   return (
     <main>
-        <Box
+        {/* <Box
           display="flex" 
           justifyContent="center"
           px={5}
@@ -25,7 +25,8 @@ const PastResults: NextPageWithLayout = () => {
               <Text fontSize={24} color={'#706C6C'}>
                  Not Found!.
               </Text>
-          </Box>
+          </Box> */}
+          <iframe title="Election Dashboard" width="1000" height="600" src="https://app.powerbi.com/view?r=eyJrIjoiNzU3MTA2ZDctOGQ0Mi00YTgzLWEzZTctMTUyNDgxNGUzN2JlIiwidCI6ImEwNTAxYzkzLWJhOWItNDM1NC05NmM3LTMyYTBmYzA5YzU2ZSJ9&pageName=ReportSection46872dbe93d64a1c7206" frameBorder="0" allowFullScreen={true}></iframe>
     </main>
   )
 

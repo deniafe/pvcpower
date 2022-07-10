@@ -2,7 +2,7 @@ import { Box, Icon, Text, Flex, Textarea, Spacer } from '@chakra-ui/react'
 import { IoWalkSharp } from 'react-icons/io5'
 
 type DistanceProps = {
-  leg: google.maps.DirectionsLeg;
+  leg: google.maps.DirectionsLeg | undefined;
 }
 
 const secondsPerDay = 60 * 60 * 24;

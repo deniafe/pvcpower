@@ -2,7 +2,7 @@ import { Box, Image, Text, Flex, Icon, Center } from '@chakra-ui/react'
 import { MdArrowDropDown } from 'react-icons/md'
 
 type ChildrenProps = {
-  leg: any
+  leg: google.maps.DirectionsLeg | undefined;
 }
 
 const AddressBoxPointer = ({leg}: ChildrenProps) => {

@@ -3,7 +3,7 @@ import { Button } from '@chakra-ui/react'
 import { IoLocationSharp } from "react-icons/io5";
 
 type ChildrenProps = {
-  text?: any
+  text?: string
   icon?: any
 }
 
