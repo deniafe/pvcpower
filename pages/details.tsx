@@ -123,8 +123,6 @@ const Details: NextPageWithLayout = () => {
 
   const reviewBox = comments.map((comment, i) => {
     return (
-  
-
       <Box 
         key={i}
         width={'80%'}
@@ -135,12 +133,12 @@ const Details: NextPageWithLayout = () => {
           <Flex gap='2'>
 
           <Avatar size='sm' name='authur' src='./blankProfilePic.jpg' />
-            <Text color='#00CA90' fontWeight={500}>{comment.username}</Text>
+            <Text color='#00CA90' fontWeight={500}>{comment?.username}</Text>
           </Flex>
 
           <Box pl={10} color='#706C6C' fontWeight={400}>
-            <Text fontSize={'15px'}>{comment.content}</Text>
-            <Text marginTop={'5px'} fontSize={'12px'}>{timeSince(comment.postDate)} ago</Text>
+            <Text fontSize={'15px'}>{comment?.content}</Text>
+            <Text marginTop={'5px'} fontSize={'12px'}>{timeSince(comment?.postDate)} ago</Text>
           </Box>
       </Box>
 
