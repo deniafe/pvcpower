@@ -15,6 +15,7 @@ import CommentPopup from '../components/CommentPopup'
 import { PollsData } from '../data/Data'
 import { distance, distance2 } from '../hooks'
 import { AppStateContext } from '../contexts/AppStateContext'
+import { useMediaQuery } from '@chakra-ui/react'
 
 
 type LatLngLiteral = google.maps.LatLngLiteral
@@ -31,6 +32,7 @@ const Polls: NextPageWithLayout = () => {
   const [directions, setDirections] = useState<DirectionsResult>();
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { state, dispatch } = useContext(AppStateContext);
+  const [sm, md] = useMediaQuery(['(min-width: 30em)', '(min-width: 48em)'])
   const toast = useToast()
 
 
@@ -84,7 +86,7 @@ const Polls: NextPageWithLayout = () => {
         <Map 
             mapRef={mapRef} 
             flattenedPolls={flattenedPolls} 
-            mapStyle={Home.mapAdContainer} 
+            mapStyle={ sm ? Home.mapContainer : Home.mapAdContainer} 
             currentLocation={currentLocation} 
             pollingCenter={pollingCenter} 
             setPollingCenter={setPollingCenter} 
