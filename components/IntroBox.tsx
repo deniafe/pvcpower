@@ -50,7 +50,7 @@ const IntroBox = ({getLocation}: ChildrenProps) => {
         >
           <Container>
             <Text size='md' fontSize='24' pt={10} pl={5} color={'white'}>
-              Vote Your Concience
+              Vote Your Conscience
             </Text>
             <Box display={{md: 'flex'}} pt="20px" pb={6}>
               <Icon display={{base: 'none', md: 'inline'}} as={IoLocateSharp} color={'white'} w={75} h={70} pr={2} /> 
@@ -72,8 +72,8 @@ const IntroBox = ({getLocation}: ChildrenProps) => {
               px={5}
               py={5}
             >
-                <Text color={'#C3DED5'} fontSize='14'>
-                  You can locate your polling unit by using the Polling Unit y clicking the button below
+                <Text textAlign={'center'} color={'#C3DED5'} fontSize='14'>
+                  You can locate your Polling Unit by clicking the button below
                 </Text>
             </Box>
             <Box
