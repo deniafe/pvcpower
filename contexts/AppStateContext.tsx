@@ -108,8 +108,16 @@ useEffect(() => {
 
 useEffect(() => {
   if (state !== initialState) {
-    localStorage.setItem("state", JSON.stringify(state)); 
-    //create and/or set a new localstorage variable called "state"
+    try {
+      localStorage.setItem("state", JSON.stringify(state)); 
+      //create and/or set a new localstorage variable called "state"
+    }
+    catch (e) {
+        console.log("Local Storage is full, Please empty data");
+        window.localStorage.clear();
+    }
+  
+    
   }
 }, [state]);
 

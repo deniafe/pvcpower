@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
-import { useRef, useState, useContext, useEffect } from 'react'
+import { useRef, useState, useContext } from 'react'
 import { useRouter } from 'next/router'
+import { Image, Box, Spacer } from '@chakra-ui/react'
 
 import Map from '../components/Map'
 import { GoogleMap } from '@react-google-maps/api'
@@ -8,10 +9,10 @@ import { GoogleMap } from '@react-google-maps/api'
 import Layout from '../components/layouts/layout'
 import type { NextPageWithLayout } from './_app' 
 import Navbar from '../components/Navigation/navbar'
-import { Image,Flex } from '@chakra-ui/react'
 import Home from '../styles/Home.module.css'
 import IntroBox from '../components/IntroBox'
 import { AppStateContext } from '../contexts/AppStateContext'
+import { useDisclosure } from '@chakra-ui/react'
 
 
 
@@ -23,8 +24,6 @@ const Page: NextPageWithLayout = () => {
   const mapRef = useRef<GoogleMap>();
   const [position, setPosition] = useState<LatLngLiteral>();
   const { dispatch } = useContext(AppStateContext);
-
-  // const  center = useMemo<LatLngLiteral>(() => ({lat: 6.404736138, lng: 3.393873833}), [])
 
   // If browser supports navigator.geolocation, generate Lat/Long else let user know there is an error
   const getPosition = () => {
@@ -56,19 +55,27 @@ const Page: NextPageWithLayout = () => {
       dispatch({type: 'SET_CURRENT_LOCATION', payload: {lat, lng}})
       setPosition({lat, lng})
       router.push('/address')
-      // router.push({
-      //   pathname: '/address',
-      //   query: {lat , lng},
-      // }, '/address')
     }
   
   return (
     <>
       <Map mapStyle={Home.mapContainer} mapRef={mapRef} center={position} pointer="./Map circle.png"/>
-      <Flex>
+      <Box display={{md: 'flex'}}>
+        <Spacer></Spacer>
         <IntroBox getLocation={getPosition}/>
-        <Image src='./Map circle.png' zIndex={2} alt="Map Pointer" w='380px' h='380px' mt='120px' ml='120'/>
-      </Flex>
+        <Spacer></Spacer>
+        <Image 
+          display={{base: 'none', md: 'inline'}}
+          src='./Map circle.png' 
+          zIndex={2} 
+          alt="Map Pointer" 
+          w={{md: '300px', lg: '380px'}}
+          h={{md: '300px', lg: '380px'}}
+          mt='120px' 
+          // mr={{md: '6%', xl: '15%'}}
+        />
+        <Spacer></Spacer>
+      </Box>
 
     </>
   )

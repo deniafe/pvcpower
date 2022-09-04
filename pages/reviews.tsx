@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import { useState, useEffect, useContext } from 'react';
 import Layout from '../components/layouts/layout'
 import PollsLayout from '../components/layouts/polls'
-import { Image, Text, Box, SkeletonText, Flex, Avatar } from '@chakra-ui/react'
+import { Image, Text, Box, SkeletonText, Flex, Avatar, Center } from '@chakra-ui/react'
 import type { NextPageWithLayout } from './_app'
 import { firestore } from '../firebase'
 import {collection, QueryDocumentSnapshot, DocumentData, query, where, limit, getDocs} from "@firebase/firestore";
@@ -48,7 +48,7 @@ const Reviews: NextPageWithLayout = () => {
 
       <Box 
         key={i}
-        width={'80%'}
+        width={{base: '100%', md: '80%'}}
         bg={'rgba(0, 158, 176, 0.04)'}
         p={6}
         my={5}
@@ -117,9 +117,14 @@ const Reviews: NextPageWithLayout = () => {
        <Box          
             p={10}
           >
-            <Text fontSize={24} pb={12}>
-              Comments about this polling center
-            </Text>
+            <Center>
+
+              <Text textAlign={{base: 'center'}} fontSize={24}  pt={{base: 10, lg: 0}} pb={{base: 6, lg: 12}}>
+                Comments about this polling center
+              </Text>
+
+            </Center>
+            
         {
           loading ? (
           <Loading />

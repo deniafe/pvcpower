@@ -14,10 +14,11 @@ const IntroBox = ({getLocation}: ChildrenProps) => {
   return (
     <>
     <Box
-      w='390px' 
-      h='450px' 
-      marginTop={'60px'}
-      marginLeft={'200px'}
+      w={{base: '98%', md:'390px' }}
+      minH='450px' 
+      marginTop={{base: '120px', md: '60px'}}
+      mx={{base: '2%'}}
+      // ml={{md: '6%', xl: '15%'}}
       position={'relative'}
       >
         <Box
@@ -40,8 +41,8 @@ const IntroBox = ({getLocation}: ChildrenProps) => {
           />
         </Box>
         <Box
-          w='390px' 
-          h='450px'
+           w={{base: '98%', md:'390px' }}
+          minH='450px'
           px={4}
           pb={4}
           borderRadius={20}
@@ -51,8 +52,8 @@ const IntroBox = ({getLocation}: ChildrenProps) => {
             <Text size='md' fontSize='24' pt={10} pl={5} color={'white'}>
               Vote Your Concience
             </Text>
-            <Flex pt="20px" pb={6}>
-              <Icon as={IoLocateSharp} color={'white'} w={75} h={70} pr={2} /> 
+            <Box display={{md: 'flex'}} pt="20px" pb={6}>
+              <Icon display={{base: 'none', md: 'inline'}} as={IoLocateSharp} color={'white'} w={75} h={70} pr={2} /> 
               <Box>
                 <Text color={'white'} fontSize='18' pt={5} pb={2}>
                 Polling and Election Dashboard
@@ -62,7 +63,7 @@ const IntroBox = ({getLocation}: ChildrenProps) => {
                   due to the restricted movement on election days.
                 </Text>
             </Box>
-            </Flex>
+            </Box>
             <Divider/>
             <Box
               display="flex" 

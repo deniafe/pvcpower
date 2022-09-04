@@ -13,12 +13,15 @@ import "@reach/combobox/styles.css";
 import Home from '../styles/Home.module.css'
 import { IoLocationSharp } from 'react-icons/io5'
 import { Icon, Box } from '@chakra-ui/react'
+import { BottomSheetRef } from "react-spring-bottom-sheet";
 
 type PlacesProps = {
   setCurrentLocation: (position: google.maps.LatLngLiteral) => void;
+  sheetRef?: React.MutableRefObject<BottomSheetRef>;
 };
 
-export default function Places({ setCurrentLocation }: PlacesProps) {
+export default function Places({ setCurrentLocation, sheetRef }: PlacesProps) {
+
   const {
     ready,
     value,
@@ -34,6 +37,7 @@ export default function Places({ setCurrentLocation }: PlacesProps) {
     const results = await getGeocode({ address: val });
     const { lat, lng } = await getLatLng(results[0]);
     setCurrentLocation({ lat, lng });
+    sheetRef?.current.snapTo(60, { source: 'snap-to-bottom' })
   };
 
   console.log({status, data})
@@ -50,7 +54,7 @@ export default function Places({ setCurrentLocation }: PlacesProps) {
             className={Home.comboboxInput}
             placeholder="Search office address"
           />
-          <ComboboxPopover>
+          <ComboboxPopover portal={false}>
             <ComboboxList>
               {status === "OK" &&
                 data.map(({ place_id, description }) => (
@@ -59,7 +63,7 @@ export default function Places({ setCurrentLocation }: PlacesProps) {
             </ComboboxList>
           </ComboboxPopover>
         </Combobox>
-        <Icon position='absolute' right='5' top='2' as={IoLocationSharp} color='#00CA90' />
+        <Icon position='absolute' left={{base:'95%', md: '98%'}} top='2' as={IoLocationSharp} color='#00CA90' />
     </Box>
 
   );

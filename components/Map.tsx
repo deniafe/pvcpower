@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useMemo, useCallback, useRef,  
 import { GoogleMap, Marker, DirectionsRenderer, Circle, MarkerClusterer } from '@react-google-maps/api'
 import { distance, distance2 } from '../hooks'
 import { AppStateContext } from '../contexts/AppStateContext'
+import { useBreakpointValue } from '@chakra-ui/react'
 
 type MapOptions = google.maps.MapOptions
 type LatLngLiteral = google.maps.LatLngLiteral
@@ -27,6 +28,15 @@ type DirectionsType = google.maps.DirectionsRenderer
 const Map = ({mapStyle, mapRef, flattenedPolls, currentLocation, pollingCenter, setPollingCenter, setPollingAddress, center, pointer, directions, setDirections}: ChildrenProps) => {
 
   const { state, dispatch } = useContext(AppStateContext)
+  const variant = useBreakpointValue({ 
+    base: 'base', 
+    md: 'md' 
+  }, {
+    // Breakpoint to use when mediaqueries cannot be used, such as in server-side rendering
+    // (Defaults to 'base')
+    fallback: 'md'
+  })
+
 
   center = center || {lat: 6.404736138, lng: 3.393873833}
 
@@ -119,7 +129,7 @@ const Map = ({mapStyle, mapRef, flattenedPolls, currentLocation, pollingCenter, 
           dispatch({ type: 'SET_DIRECTION', payload: result });
           // setDirections(result)
           const myTimeout = setTimeout(() => {
-            panToRight()
+            variant === 'md' && panToRight()
             myStopFunction()
           }, 500);
 

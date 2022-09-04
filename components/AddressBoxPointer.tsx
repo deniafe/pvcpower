@@ -10,7 +10,7 @@ const AddressBoxPointer = ({leg}: ChildrenProps) => {
   console.log(leg)
 
   return (
-    <Box maxWidth='300px' borderRadius='lg' overflow='scroll' position={'absolute'} zIndex={1} left={450} top={100} >
+    <Box maxWidth={{base: '90%', lg:'300px' }}borderRadius='lg' overflow='scroll' position={'absolute'} zIndex={1} left={{base: '7%', md:450}} top={{base: 160, md: 100}} >
         <Box 
             mr={4} 
             borderRadius='lg'
@@ -44,8 +44,8 @@ const AddressBoxPointer = ({leg}: ChildrenProps) => {
               </Box>
             </Flex>
         </Box>  
-        <Center width='300px' mt='-13px' >
-          <Icon as={MdArrowDropDown} color='#0E4D5A' w={30} h={30} />
+        <Center  width='300px' mt={{md: '-13px'}} >
+          <Icon display={{base: 'none', md: 'inline'}} as={MdArrowDropDown} color='#0E4D5A' w={30} h={30} />
         </Center>
     </Box>
   )

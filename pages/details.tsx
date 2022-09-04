@@ -127,7 +127,7 @@ const Details: NextPageWithLayout = () => {
     return (
       <Box 
         key={i}
-        width={'80%'}
+        width={{base: '100%', md: '80%'}}
         bg={'rgba(0, 158, 176, 0.04)'}
         p={6}
         my={5}
@@ -195,11 +195,11 @@ const Details: NextPageWithLayout = () => {
         <Box          
           p={10}
         >
-          <Text fontSize={24} pb={2}>
+          <Text pt={{base: 10, lg: 0}} textAlign={{base: 'center'}} fontSize={24} pb={2}>
             General Details
           </Text>
-          <Flex gap='20'>
-            <Box width='55%'  mr={4}>
+          <Box display={{base: 'block', lg: 'flex'}} gap='20'>
+            <Box width={{base: '100%', lg:'55%'}}  mr={4}>
 
               <Text fontSize={'14px'} color='gray.500' mb={8}>
                 Get the complete details about this polling station
@@ -297,13 +297,13 @@ const Details: NextPageWithLayout = () => {
             </Box>
               
               
-            <Box width={'45%'} ml={10}>
+            <Box width={{base: '100%', lg: '45%'}} mt={{base: 16, lg:0}} ml={{base: 0, lg:10}}>
               
             <Box  
                 borderRadius='base'
                 height="100px"
                 borderWidth={1}
-                width={'80%'}
+                width={{base: '100%', md: '80%'}}
                 bg='white'>
                 <Flex p='2' pt='3' pr='4'>
                 <Image src='./pollingCenter.jpg' alt='Map Visuals' borderRadius='md' width='80px' h='74px' borderWidth='2px' borderStyle='solid' borderColor='#3B879C' />
@@ -354,7 +354,7 @@ const Details: NextPageWithLayout = () => {
             
             </Box>
            
-          </Flex>
+          </Box>
           
         </Box>
         <CommentPopup setComment={setComment} showMessage={showMessage} pollingCenter={pollingCenter} isOpen={isOpen} onOpen={onOpen} onClose={onClose} comment={comment}  />

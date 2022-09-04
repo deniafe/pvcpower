@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 import { useState, useRef, useMemo, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
-import { useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, Show, useDisclosure, useToast } from '@chakra-ui/react'
 import Map from '../components/Map'
 import Layout from '../components/layouts/layout'
 import PollsLayout from '../components/layouts/polls'
@@ -16,6 +16,7 @@ import { PollsData } from '../data/Data'
 import { distance, distance2 } from '../hooks'
 import { AppStateContext } from '../contexts/AppStateContext'
 import { useMediaQuery } from '@chakra-ui/react'
+import BottomDrawer from '../components/BottomDrawer'
 
 
 type LatLngLiteral = google.maps.LatLngLiteral
@@ -81,8 +82,13 @@ const Polls: NextPageWithLayout = () => {
   return (
     <>
       <main className={Home.mainAd}>
-        <SmallMap leg={directions?.routes[0].legs[0]} />
-        {directions && <AddressBoxPointer leg={directions?.routes[0].legs[0]} />}
+        <Box  display={{base: 'none', lg: 'inline'}}>
+           <SmallMap leg={directions?.routes[0].legs[0]} />
+        </Box>
+        {/* <Box display={{base: 'none', lg: 'inline'}}> */}
+          {directions && <AddressBoxPointer leg={directions?.routes[0].legs[0]} />}
+        {/* </Box>  */}
+        
         <Map 
             mapRef={mapRef} 
             flattenedPolls={flattenedPolls} 
@@ -96,7 +102,14 @@ const Polls: NextPageWithLayout = () => {
             directions={directions} 
             setDirections={setDirections} 
         />
-        <AddressInfoBox onOpen={onOpen} setComment={setComment} comment={comment} showMessage={showMessage}  pollingCenter={pollingCenter}  mapRef={mapRef} ward={ward} setCurrentLocation={setCurrentLocation} currentLocation={currentLocation} directions={directions} setDirections={setDirections} />
+        <Box  display={{base: 'none', md: 'inline'}}>
+          <AddressInfoBox onOpen={onOpen} setComment={setComment} comment={comment} showMessage={showMessage}  pollingCenter={pollingCenter}  mapRef={mapRef} ward={ward} setCurrentLocation={setCurrentLocation} currentLocation={currentLocation} directions={directions} setDirections={setDirections} />
+        </Box>
+
+        <Show below='base'>
+          <BottomDrawer  onOpen={onOpen} setComment={setComment} comment={comment} showMessage={showMessage}  pollingCenter={pollingCenter}  mapRef={mapRef} ward={ward} setCurrentLocation={setCurrentLocation} currentLocation={currentLocation} directions={directions} setDirections={setDirections} />
+        </Show>
+
         <CommentPopup setComment={setComment} showMessage={showMessage} pollingCenter={pollingCenter} isOpen={isOpen} onOpen={onOpen} onClose={onClose} comment={comment}  />
       </main>
     </>

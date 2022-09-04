@@ -1,14 +1,13 @@
-import { useRef, useState, useEffect, useContext, Dispatch, SetStateAction, MutableRefObject } from 'react'
-import { Heading, Box, Text, Stack, Textarea, Select, Center, Button, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverFooter, PopoverArrow, PopoverBody, PopoverCloseButton, ButtonGroup, ToastId } from '@chakra-ui/react'
-import { MdArrowDropDown, MdDirections } from "react-icons/md";
-import { IoLocationSharp, IoWalkSharp, IoArrowForwardSharp, IoChatboxEllipsesSharp, IoArrowBackSharp } from 'react-icons/io5'
-import Places from "../components/Places";
-import Home from '../styles/Home.module.css'
-import LocateButton from '../components/LocateButton'
-import Distance from './Distance'
-import ModeButton from './ModeButton'
-import { AppStateContext } from '../contexts/AppStateContext'
+import React, { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useRef, useState } from 'react'
+import { Box, Button, ButtonGroup, Center, Heading, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, PopoverTrigger, Select, Stack, Text, Textarea, ToastId } from '@chakra-ui/react'
+import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
+import 'react-spring-bottom-sheet/dist/style.css'
+import { IoArrowBackSharp, IoArrowForwardSharp, IoChatboxEllipsesSharp } from 'react-icons/io5'
 import { GoogleMap } from '@react-google-maps/api'
+import { AppStateContext } from '../contexts/AppStateContext'
+import { MdArrowDropDown, MdDirections } from 'react-icons/md'
+import Places from './Places'
+import Distance from './Distance'
 
 const wards = [
   'VICTORIA ISLAND I', 
@@ -42,7 +41,9 @@ type ChildrenProps = {
 }) => ToastId
 }
 
-const AddressInfoBox = ({mapRef, ward, pollingCenter, onOpen, currentLocation, setCurrentLocation, directions, setDirections, setComment, comment,  showMessage}: ChildrenProps) => {
+const BottomDrawer = ({mapRef, ward, pollingCenter, onOpen, currentLocation, setCurrentLocation, directions, setDirections, setComment, comment,  showMessage}: ChildrenProps) => {
+
+  const sheetRef = useRef() as React.MutableRefObject<BottomSheetRef>;
 
   const initialFocusRef = useRef<HTMLButtonElement>()
   const [stepsIndex, setStepsIndex] = useState(0);
@@ -80,14 +81,26 @@ const AddressInfoBox = ({mapRef, ward, pollingCenter, onOpen, currentLocation, s
     }
     onOpen()
   }
-
-
+  
   return (
-    <>
-      <Box 
+    <BottomSheet
+     ref={sheetRef}
+     open 
+     // the first snap points height depends on the content, while the second one is equivalent to 60vh
+    snapPoints={({ minHeight, maxHeight }) => [60, maxHeight / 0.2, maxHeight / 0.4, maxHeight / 0.6]}
+    // Opens the largest snap point by default, unless the user selected one previously
+    defaultSnap={({ lastSnap, snapPoints }) =>
+      lastSnap ?? Math.min(...snapPoints)
+    }
+    blocking={false}
+  >
+    <Center>
+      <Text> Drag up for more options</Text>
+      </Center>
+      {/* <Box 
         p={1} 
         ml={10} 
-        mt={{md: '24', lg: '2' }}
+        mt='2' 
         bg='white' 
         w='390px' 
         h='vh'
@@ -95,8 +108,8 @@ const AddressInfoBox = ({mapRef, ward, pollingCenter, onOpen, currentLocation, s
         position={'relative'}
         borderRadius='10px'
         boxShadow= 'rgba(0, 201, 147, 0.47) 1px 1px 16px 0'
-          >
-          <Box py={5} px={8}>
+          > */}
+          <Box pb={5} pt={10} px={8}>
             <Text fontSize={24}>
               Address
             </Text>
@@ -118,6 +131,7 @@ const AddressInfoBox = ({mapRef, ward, pollingCenter, onOpen, currentLocation, s
               <Box pb={3}>
                 <Text fontSize={14} mb={1} color='#706C6C'>Address</Text>
                 <Places
+                  sheetRef={sheetRef}
                   setCurrentLocation={(position) => {
                     setCurrentLocation && setCurrentLocation(position);
                     dispatch({type: 'SET_CURRENT_LOCATION', payload: position})
@@ -253,9 +267,11 @@ const AddressInfoBox = ({mapRef, ward, pollingCenter, onOpen, currentLocation, s
               </Box>
             </Stack>
           </Box>
-        </Box>
-    </>
+      {/* </Box> */}
+      
+     
+  </BottomSheet>
   )
 }
 
-export default AddressInfoBox
+export default BottomDrawer
