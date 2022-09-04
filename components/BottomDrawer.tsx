@@ -87,14 +87,14 @@ const BottomDrawer = ({mapRef, ward, pollingCenter, onOpen, currentLocation, set
      ref={sheetRef}
      open 
      // the first snap points height depends on the content, while the second one is equivalent to 60vh
-    snapPoints={({ minHeight, maxHeight }) => [60, maxHeight / 0.2, maxHeight / 0.4, maxHeight / 0.6]}
+    snapPoints={({ minHeight, maxHeight }) => [70, maxHeight / 0.2, maxHeight / 0.4, maxHeight / 0.6]}
     // Opens the largest snap point by default, unless the user selected one previously
     defaultSnap={({ lastSnap, snapPoints }) =>
       lastSnap ?? Math.min(...snapPoints)
     }
     blocking={false}
   >
-    <Center>
+    <Center mt={6}>
       <Text> Drag up for more options</Text>
       </Center>
       {/* <Box 
