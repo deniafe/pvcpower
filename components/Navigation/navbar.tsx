@@ -13,15 +13,15 @@ const Navbar = () => {
     <>
     <TopDrawer onClose={onClose} isOpen={isOpen} />
     <Box 
-     mt={2}
+     mt={{md: 2}}
      mx={2}
-     pt={0}
+     pt={{base: 2, md: 0}}
      pb={1.5}
-     px={3}
+     px={{md: 3}}
      zIndex={2}
      position="relative"
-     bg={{md: 'white'}}
-     borderRadius={40}
+     bg={{base: 'white'}}
+     borderRadius={{md: 40}}
     >
       <Flex minWidth='max-content' alignItems='center' gap='2'>
         <Box p='2'>
@@ -58,7 +58,7 @@ const Navbar = () => {
           display={{base: 'inline', md: 'none'}}
           onClick={onOpen}
           >
-          <Icon as={IoMenu} color={'black'} w={'28px'} h={'28px'} />
+          <Icon as={IoMenu} color={'black'} w={'22px'} h={'22px'} />
         </Box>
       
       </Flex>

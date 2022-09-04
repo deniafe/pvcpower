@@ -43,7 +43,7 @@ const PollsLayout = ({children}: ChildrenProps) => {
             boxShadow= 'rgba(0, 201, 147, 0.47) 1px 1px 8px 0'
             onClick={onOpen}
             >
-            <Icon as={IoMenu} color={'black'} w={'28px'} h={'28px'} />
+            <Icon as={IoMenu} color={'black'} w={'22px'} h={'22px'} />
           </Box>
           <main >{children}</main>
       </Show>

@@ -106,7 +106,7 @@ const Polls: NextPageWithLayout = () => {
           <AddressInfoBox onOpen={onOpen} setComment={setComment} comment={comment} showMessage={showMessage}  pollingCenter={pollingCenter}  mapRef={mapRef} ward={ward} setCurrentLocation={setCurrentLocation} currentLocation={currentLocation} directions={directions} setDirections={setDirections} />
         </Box>
 
-        <Show below='base'>
+        <Show below='md'>
           <BottomDrawer  onOpen={onOpen} setComment={setComment} comment={comment} showMessage={showMessage}  pollingCenter={pollingCenter}  mapRef={mapRef} ward={ward} setCurrentLocation={setCurrentLocation} currentLocation={currentLocation} directions={directions} setDirections={setDirections} />
         </Show>
 
